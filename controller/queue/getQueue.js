@@ -10,16 +10,18 @@ const mongoose = require("mongoose");
  */
 const getQueue = async (req, res) => {
   try {
-    const queueNumber = req.query.queueNumber;
+    const token = req.query.token;
     let query = {};
 
-    if (queueNumber !== undefined) {
-      query = {
-        queueNumber,
-      };
+    if (token !== undefined) {
+      query.token = token;
     }
 
-    res.status(200).json(await getQueueInDb(query, Queue));
+    const sort = {
+      sort: { polyclinicCode: 1, queueNumber: 1 },
+    };
+
+    res.status(200).json(await getQueueInDb(query, Queue, "", sort));
   } catch (error) {
     console.error(error.data ?? error);
     handleError(res, error.data ?? error);

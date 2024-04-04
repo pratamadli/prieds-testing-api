@@ -26,6 +26,15 @@ const QueueSchema = new Schema(
       type: String,
       required: true,
     },
+    polyclinicName: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["queue", "done"],
+      required: true,
+    },
   },
   {
     versionKey: false,

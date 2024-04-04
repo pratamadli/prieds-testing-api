@@ -45,6 +45,10 @@ const createQueueInDb = ({ visitorNumber, payment, polyclinicCode }) => {
       );
       polyclinicData = polyclinicData.data;
 
+      console.log("polyclinicData", polyclinicData);
+
+      const polyclinicName = polyclinicData[0].name;
+
       if (polyclinicData.length <= 0) {
         return reject(buildErrObject(422, "POLYCLINIC DOES NOT EXIST"));
       }
@@ -64,8 +68,6 @@ const createQueueInDb = ({ visitorNumber, payment, polyclinicCode }) => {
           buildErrObject(422, "QUEUE ENTRY ALREADY EXISTS FOR TODAY")
         );
       }
-
-      latestQueue = latestQueue?.data[0] || null;
 
       let latestQueue = await getQueueInDb(
         {
@@ -92,13 +94,15 @@ const createQueueInDb = ({ visitorNumber, payment, polyclinicCode }) => {
 
       // Construct the token
       const token = `${paymentCode}-${polyclinicCode}-${paddedQueueNumber}`;
-
+      const status = "queue";
       const model = new Queue({
         visitorNumber,
         token,
         queueNumber,
         payment,
         polyclinicCode,
+        polyclinicName,
+        status,
       });
       const data = await model.save();
       resolve(buildSuccResp(data));
